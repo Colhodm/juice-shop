@@ -1,4 +1,3 @@
-yml
 name: SonarCloud Scan and Devin Remediation
 on:
   workflow_dispatch:
