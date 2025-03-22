@@ -35,7 +35,7 @@ jobs:
       with:
         args: >
           -Dsonar.organization=${{ env.SONAR_ORG }}
-          -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
+          -Dsonar.projectKey="Colhodm_juice-shop"
           -Dsonar.sources=.
 
     - name: Setup Python
