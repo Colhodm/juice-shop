@@ -8,31 +8,35 @@ on:
     branches:
       - '**'
 
-run: |
-    echo "SONAR_PROJECT_KEY is: $SONAR_PROJECT_KEY"
-    echo "SONAR_ORG is: $SONAR_ORG"
-    echo "SONAR_ORG is: $secrets.SONAR_ORG"
 jobs:
   analyze:
     name: Analyze and Remediate
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
+    - name: Debug SonarQube Variables
+      run: |
+        echo "SONAR_PROJECT_KEY is: $SONAR_PROJECT_KEY"
+        echo "SONAR_ORG is: $SONAR_ORG"
+      env:
+        SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+        SONAR_ORG: ${{ secrets.SONAR_ORG }}
+
     - name: SonarCloud Scan
       uses: SonarSource/sonarqube-scan-action@v4
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_ORG: ${{ secrets.SONAR_ORG }}
+        SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
       with:
         args: >
-          -Dsonar.organization=${{ secrets.SONAR_ORG }}
-          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+          -Dsonar.organization=${{ env.SONAR_ORG }}
+          -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
           -Dsonar.sources=.
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: https://sonarcloud.io
 
     - name: Setup Python
       uses: actions/setup-python@v5
@@ -55,3 +59,4 @@ jobs:
         SONAR_ORG: ${{ secrets.SONAR_ORG }}
         SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
       run: python .github/scripts/devin_remediation.py
+
