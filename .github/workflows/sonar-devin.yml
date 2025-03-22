@@ -30,8 +30,11 @@ jobs:
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.x'
-
+        python-version: '3.9'
+        
+    - name: Check Python Version
+      run: python --version
+    
     - name: Install Dependencies
       run: pip install aiohttp
 
