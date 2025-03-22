@@ -8,6 +8,10 @@ on:
     branches:
       - '**'
 
+run: |
+    echo "SONAR_PROJECT_KEY is: $SONAR_PROJECT_KEY"
+    echo "SONAR_ORG is: $SONAR_ORG"
+    echo "SONAR_ORG is: $secrets.SONAR_ORG"
 jobs:
   analyze:
     name: Analyze and Remediate
