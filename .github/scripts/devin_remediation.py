@@ -22,7 +22,7 @@ async def get_sonarcloud_issues():
         "types": "VULNERABILITY",
         "statuses": "OPEN"
     }
-    print('hello')
+    print('hell')
 
     async with aiohttp.ClientSession() as session:
         async with session.get(url, headers=headers, params=params) as response:
