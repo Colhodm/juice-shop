@@ -1,7 +1,33 @@
-include:
-  - template: Auto-DevOps.gitlab-ci.yml
+stages:
+  - analyze
+  - remediate
 
 variables:
-  SAST_EXCLUDED_PATHS: "frontend/src/assets/private/**"
-  TEST_DISABLED: "true"
-  DAST_DISABLED: "true"
+  SONAR_TOKEN: "$SONAR_TOKEN"
+  SONAR_ORG: "$SONAR_ORG"
+  SONAR_PROJECT_KEY: "Colhodm_juice-shop"
+  DEVIN_API_KEY: "$DEVIN_API_KEY"
+  GIT_STRATEGY: clone
+
+analyze:
+  stage: analyze
+  image: sonarsource/sonar-scanner-cli:latest
+  script:
+    - sonar-scanner -Dsonar.organization=$SONAR_ORG
+  only:
+    - branches
+    - merge_requests
+
+setup_python:
+  stage: remediate
+  image: python:3.9
+  before_script:
+    - python --version
+    - pip install aiohttp
+  script:
+    - git config --global user.name "GitLab Runner"
+    - git config --global user.email "runner@gitlab.com"
+    - python3 $CI_PROJECT_DIR/.gitlab/scripts/devin_remediation.py
+  only:
+    - branches
+    - merge_requests
